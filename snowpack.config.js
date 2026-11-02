@@ -7,7 +7,7 @@ module.exports = {
   },
   buildOptions: {
     out: "build",
-    baseUrl: "/EM shopping Cart/build/",
+    baseUrl: "/",
     clean: true,
     htmlFragments: true,
   },

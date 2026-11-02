@@ -1,0 +1,1 @@
+import t from"./util.js";const s="/json/data.json";export default class c{constructor(o){this.products={}}async init(){try{const o=await fetch(s);if(!o.ok)throw new Error(o.statusText);const r=await o.json();console.log(r),t(r)}catch(o){console.error("Error loading products:",o)}}}

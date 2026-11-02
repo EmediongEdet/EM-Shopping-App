@@ -15,9 +15,11 @@ const weather = new getWeather();
    
     weather.apiFetch();
 
-
+async function getItemQuantity () {
     let itemquantity = await getLocalStorage("no_of_items")
     const no_of_items = document.querySelector(".cart-items")
 
-    no_of_items.innerHTML = itemquantity
+    no_of_items.innerHTML = itemquantity || 0;
+}
 
+getItemQuantity();

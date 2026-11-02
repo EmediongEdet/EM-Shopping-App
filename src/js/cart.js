@@ -1,46 +1,98 @@
-import {getLocalStorage} from './util.js'
+
+import { getLocalStorage, setLocalStorage } from "./util.js";
 
 export default class cartList {
-    constructor(){
-        this.total = 0
+
+    constructor() {
+        this.total = 0;
     }
 
     async init() {
-        const product = await getLocalStorage("so-cart")
-        // console.log(product)
-        this.createTemplate(product)
-        this.calculateTotal(product)
+
+        const product = await getLocalStorage("so-cart") || [];
+
+        this.createTemplate(product);
+        this.calculateTotal(product);
+
     }
 
-    createTemplate(product){
-        const parent  = document.querySelector(".productDesc")
+    createTemplate(product) {
 
-         const renderTemplate = product.forEach((item)=>{
-            const link = document.createElement('a')
-            link.setAttribute("href", `/detail.html?product=${item.ProductId}`)
-            link.classList.add("delbtn")
-            const par = document.createElement("p")
-            
-            par.innerHTML = `${item.ProductName} <i class="fa-solid fa-trash"></i>`
+        const parent = document.querySelector(".productDesc");
 
-            const span = document.createElement('span')
-            span.classList.add("price")
+        if (!parent) return;
 
-            span.innerHTML = `${item.ProductAmount}`
-       
-            par.appendChild(span)
-            link.appendChild(par)
-            parent.appendChild(link)
-         })
+        parent.innerHTML = "";
 
-         return renderTemplate
+        product.forEach((item) => {
+
+            const div = document.createElement("div");
+            div.classList.add("delbtn");
+
+            const par = document.createElement("p");
+
+            par.innerHTML = `${item._ProductName_}`;
+
+            const span = document.createElement("span");
+            span.classList.add("price");
+            span.innerHTML = `$${item._ProductAmount_}`;
+
+            const button = document.createElement("button");
+            button.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            button.type = "button";
+
+            button.addEventListener("click", async () => {
+
+                await this.deleteItem(item._ProductId_);
+
+            });
+
+            par.appendChild(span);
+            div.appendChild(par);
+            div.appendChild(button);
+
+            parent.appendChild(div);
+
+        });
+
     }
 
-    calculateTotal(product){
-        const amounts = product.map((item)=> parseInt(item.ProductAmount));
-        this.total = amounts.reduce((sum, item)=> {return sum + item}, 0) 
-        document.querySelector(".amount").innerHTML = `$${this.total}`
-      
+    async deleteItem(id) {
+
+        let product = await getLocalStorage("so-cart") || [];
+
+        product = product.filter(item =>
+            item._ProductId_ !== id
+        );
+
+        await setLocalStorage("so-cart", product);
+        await setLocalStorage("no_of_items", product.length);
+
+        const no_of_items = document.querySelector(".cart-items");
+
+        if (no_of_items) {
+            no_of_items.innerHTML = product.length;
+        }
+
+        this.createTemplate(product);
+        this.calculateTotal(product);
+
     }
+
+    calculateTotal(product) {
+
+        const amounts = product.map(item =>
+            Number(item._ProductAmount_)
+        );
+
+        this.total = amounts.reduce((sum, item) => sum + item, 0);
+
+        const amount = document.querySelector(".amount");
+
+        if (amount) {
+            amount.innerHTML = `$${this.total}`;
+        }
+
+    }
+
 }
-

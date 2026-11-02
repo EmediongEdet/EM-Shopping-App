@@ -1,0 +1,1 @@
+import o from"./products.js";import r from"./weather.js";import{getLocalStorage as i}from"./util.js";import n from"./cart.js";const c=new o,s=new n;s.init();const a=new r;c.init(),a.apiFetch();async function m(){let t=await i("no_of_items");const e=document.querySelector(".cart-items");e.innerHTML=t||0}m();

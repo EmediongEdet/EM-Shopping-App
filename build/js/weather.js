@@ -1,0 +1,1 @@
+import{buildWeatherCards as e}from"./util.js";const r="https://api.openweathermap.org/data/2.5/weather?q=London,GB&units=Imperial&appid=cb411365f163ce2a1a5d327896469c7f";export default class o{constructor(){}async apiFetch(){let t=await fetch(r);if(t.ok){let a=await t.json();e(a)}else throw Error(t.statusText)}}
